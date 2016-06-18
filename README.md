@@ -1,3 +1,3 @@
-# AnÃ¡lise ExploratÃ³ria de Dados
+# Análise Exploratória de Dados
 
-Aplicativo shiny para anÃ¡lises descritivas, tabelas e grÃ¡ficos.
+Aplicativo shiny para análises descritivas, tabelas e gráficos.
