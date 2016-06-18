@@ -193,7 +193,8 @@ server <- function(input, output, session)
     dados <- dados(input)
     if(dados$aux == 1) as.matrix("Escolha o arquivo com o banco de dados")
     else as.matrix(dados$dados[,input$show_vars, drop = FALSE])
-  })
+  }, options = list(pageLength = 10)
+  )
 
 # table da tabela com as variáveis quantitativas ( númericas )
   output$TabelaDescritiva_quantitativa <- renderTable({
@@ -234,39 +235,58 @@ server <- function(input, output, session)
   # gráfico
   
   output$grafico <- renderPlot({
-    dados <- as.matrix(Verificar_Variaveis(input)$Dados)
+    dados <- Verificar_Variaveis(input)$Dados
     Colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali)
     colunaQuanti <- which(colnames(dados) == input$SelecionarVariaveisQuant)
     coluna <- which(colnames(dados) == input$SelecionarGLinhas)
     xlab <- input$text_eixo
     main <- input$text_titulo
+    
+    BASE <- ggplot(data = dados,
+                   aes(x = dados[,colunaQuali], fill = dados[,colunaQuali]  ))
+    
+    Colunas <- BASE + geom_bar(colour = "black",stat = "count") +
+                labs(x = xlab,y = "Frequência") + 
+                ggtitle(main) + 
+                #scale_fill_discrete(name="Tipos de Espécie") +
+                guides(fill=FALSE) + # Remove legend for a particular aesthetic (fill)
+                scale_fill_brewer(palette = "Set2")
+    
+    Pizza <- ggplot(data = dados,
+                    aes(x = "", fill= dados[,colunaQuali]  ))+
+                    geom_bar(width = 1, stat = "count") + coord_polar(theta = "y") + 
+                    ggtitle(main) + 
+                    theme(axis.title.x = element_blank(),axis.title.y = element_blank())
+    
+    Histograma <- ggplot(data = dados, aes(x = dados[,colunaQuanti]  )) + 
+                  geom_histogram(aes(y = ..density..),
+                  colour="black", fill="darkblue", bins = input$nclasses) +
+                  ggtitle(main) + labs(x = xlab,y = "Densidade")
+    
+    
+    
     ### Gráficos
     
       if(input$tipo == "Colunas"){
         if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
           main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else barplot(table(dados[,colunaQuali]), ylab = "Frequência",
-                     main = main, xlab = xlab)
+        else return(Colunas)
       }
       if(input$tipo == "Barras"){
         if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
           main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else barplot(table(dados[,colunaQuali]), ylab = "Frequência",
-                     main = main, xlab = xlab, horiz = TRUE)
+        else return(Colunas + coord_flip())
       }
       if(input$tipo == "Pizza"){
         if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
           main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else pie(table(dados[,colunaQuali]), ylab = "Frequência",
-                 main = main, xlab = xlab)
+        else return(Pizza)
       }
       if(input$tipo == "Histograma"){
         if(input$SelecionarVariaveisQuant=="") plot(c(0,10),c(0,10),type="n",
           main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else hist(as.numeric(dados[,colunaQuanti]), ylab = "Densidade",
-                  main = main, xlab = xlab, probability = TRUE,
-                  nclass = input$nclasses)
+        else return(Histograma)
       }
 
       if(input$tipo == "Linhas") {
