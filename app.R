@@ -1,9 +1,9 @@
 #----------------------------- Atividade Final -------------------------------#
 #------------------------ Estatística computacional --------------------------#
 #--------------------------- Lissandra e Gabriel -----------------------------#
-source("00-init.R")
-source("02-ui_elements.R")
-source("01-fnct-plot.R")
+source("00-init.R", encoding = "UTF-8")
+source("02-ui_elements.R", encoding = "UTF-8")
+source("01-fnct-plot.R", encoding = "UTF-8")
 # Início Pagina do Usuário
 #------------------------------------------------------------------------------#
 
@@ -96,7 +96,7 @@ ui <-
                           )
                   ),
                   column(8, 
-                         box(width = NULL, status = "danger" ,plotOutput("grafico"))
+                         box(width = NULL, status = "danger" ,plotlyOutput("grafico"))
                   )
                 )
         ) 
@@ -234,7 +234,7 @@ server <- function(input, output, session)
   
   # gráfico
   
-  output$grafico <- renderPlot({
+  output$grafico <- renderPlotly({
     dados <- Verificar_Variaveis(input)$Dados
     Colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali)
@@ -246,15 +246,20 @@ server <- function(input, output, session)
     BASE <- ggplot(data = dados,
                    aes(x = dados[,colunaQuali], fill = dados[,colunaQuali]  ))
     
-    Colunas <- BASE + geom_bar(colour = "black",stat = "count") +
+    Colunas <-  BASE + geom_bar(colour = "black",stat = "count") +
                 labs(x = xlab,y = "Frequência") + 
                 ggtitle(main) + 
-                #scale_fill_discrete(name="Tipos de Espécie") +
+                #scale_fill_discrete (name="Tipos de Espécie") +
                 guides(fill=FALSE) + # Remove legend for a particular aesthetic (fill)
-                scale_fill_brewer(palette = "Set2")
+                scale_fill_brewer(palette = "Set2") + 
+                theme(panel.grid.major = element_line(size = 2),
+                      axis.title = element_text(size = 12),
+                      axis.text = element_text(size = 10),
+                      plot.title = element_text(size = 14),
+                      legend.background = element_rect())
     
     Pizza <- ggplot(data = dados,
-                    aes(x = "", fill= dados[,colunaQuali]  ))+
+                    aes(x = "", fill= dados[,colunaQuali]))+
                     geom_bar(width = 1, stat = "count") + coord_polar(theta = "y") + 
                     ggtitle(main) + 
                     theme(axis.title.x = element_blank(),axis.title.y = element_blank())
@@ -271,12 +276,12 @@ server <- function(input, output, session)
       if(input$tipo == "Colunas"){
         if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
           main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else return(Colunas)
+        else grafico <- Colunas
       }
       if(input$tipo == "Barras"){
         if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
           main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else return(Colunas + coord_flip())
+        else grafico <- Colunas + coord_flip()
       }
       if(input$tipo == "Pizza"){
         if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
@@ -286,7 +291,7 @@ server <- function(input, output, session)
       if(input$tipo == "Histograma"){
         if(input$SelecionarVariaveisQuant=="") plot(c(0,10),c(0,10),type="n",
           main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else return(Histograma)
+        else grafico <- Histograma
       }
 
       if(input$tipo == "Linhas") {
@@ -298,6 +303,7 @@ server <- function(input, output, session)
           plot(as.numeric(table(dados[, coluna])), type = "b", pch = 16)
         }
       }
+    ggplotly(grafico)
   })
   
 
