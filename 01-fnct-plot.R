@@ -9,7 +9,8 @@ dados <- function(input){
            "cars" = cars,
            "faithful" = faithful,
            "WorldPhones" = as.data.frame(WorldPhones),
-           "iris" = iris)
+           "iris" = iris,
+           "mtcars" = mtcars)
   })
   
   if(input$Escolha == "Exemplo"){
