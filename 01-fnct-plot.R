@@ -13,24 +13,14 @@ dados <- function(input){
            "mtcars" = mtcars)
   })
   
-  if(input$Escolha == "Exemplo"){
-    dados <- datasetInput()
-    aux <- 0
-  }
+  if(input$Escolha == "Exemplo") dados <- datasetInput()
+
   if(input$Escolha == "Seu própio banco de dados"){
-    
-    if (is.null(input$arquivoescolhido)){
-      # obs: esse objeto aux é só para aparecer uma mensagem quando não tiver nenhum arquivo
-      # selecionado (por isso aqui ele recebe 1) quando input$arquivoescolhido é nulo. 
-      aux <- 1
-    }else{
-      aux <- 0
-      inFile <- input$arquivoescolhido
-      dados <- read.csv(inFile$datapath, header = input$header,
-                        sep = input$sep, dec = input$dec, encoding = "UTF-8")
-    }
+    inFile <- req(input$arquivoescolhido)
+    dados <- read.csv(inFile$datapath, header = input$header,
+                      sep = input$sep, dec = input$dec, encoding = "UTF-8")
   }
-  return(list(aux = aux, dados = dados))
+  return(list(dados=dados))
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -#
 
@@ -39,7 +29,6 @@ dados <- function(input){
 # e também o banco de dados transformado em factor as colunas com o nome
 # que a pessoa marcou em input.SelecionarQualitativa
 Verificar_Variaveis <- function(input){
-  aux <- dados(input)$aux
   dados <- dados(input)$dados
   
   Verificar_numeric0000 <- sapply(dados, is.numeric)
@@ -52,14 +41,13 @@ Verificar_Variaveis <- function(input){
     }
   }
   dados <- as.data.frame(dados)
-  if( aux == 1 ) as.matrix("Escolha o arquivo com o banco de dados")
+
+  if(length(input$SelecionarQualitativa) >= length(Colunas_numeric0000)) Colunas_numeric <- 0
   else{
-    if(length(input$SelecionarQualitativa) >= length(Colunas_numeric0000)) Colunas_numeric <- 0
-    else{
-      Verificar_numeric <- sapply(dados, is.numeric)
-      Colunas_numeric <- which(Verificar_numeric == TRUE)
-    }
+    Verificar_numeric <- sapply(dados, is.numeric)
+    Colunas_numeric <- which(Verificar_numeric == TRUE)
   }
+
   return(list(Colunas_numericas = Colunas_numeric, Dados = dados))
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -#

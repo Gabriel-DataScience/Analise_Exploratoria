@@ -61,10 +61,7 @@ InserirTitulo_Bi <-
 
 # inserir o eixo x do gráfico
 InserirEixo <-
-  textInput("text_eixo", label = "Eixo x", value = "Digite o titulo do eixo x")
-
-InserirEixo_Bi <-
-  textInput("text_eixo_Bi", label = "Eixo x", value = "Digite o titulo do eixo x")
+  textInput("text_eixo", label = "Eixo x", value = "Digite o título do eixo x")
 
 # inserir número de classes do histograma
 NumeroClasses <-
@@ -112,10 +109,10 @@ UIvarquali <- function(nomes)
                  choices = nomes, multiple = FALSE)
 
 UIvarquali_Bi <- function(nomes)
-  selectizeInput(inputId = "SelecionarVariaveisQuali_Bi", "Selecione a variável!",
+  selectizeInput(inputId = "SelecionarVariaveisQuali_Bi", "Selecione a variável (X)!",
                  choices = nomes, multiple = FALSE)
 UIvarquali_Bi2 <- function(nomes)
-  selectizeInput(inputId = "SelecionarVariaveisQuali_Bi2", "Selecione a variável!",
+  selectizeInput(inputId = "SelecionarVariaveisQuali_Bi2", "Selecione a variável (Y)!",
                  choices = nomes, multiple = FALSE)
 
 # Selecionar variáveis quantitativas para o gráfico
@@ -124,10 +121,10 @@ selectizeInput(inputId = "SelecionarVariaveisQuant", "Selecione a variável!",
                choices = nomes, multiple = FALSE)
 
 UIvarquanti_Bi <- function(nomes)
-  selectizeInput(inputId = "SelecionarVariaveisQuant_Bi", "Selecione a variável!",
+  selectizeInput(inputId = "SelecionarVariaveisQuant_Bi", "Selecione a variável (X)!",
                  choices = nomes, multiple = FALSE)
 UIvarquanti_Bi2 <- function(nomes)
-  selectizeInput(inputId = "SelecionarVariaveisQuant_Bi2", "Selecione a variável!",
+  selectizeInput(inputId = "SelecionarVariaveisQuant_Bi2", "Selecione a variável (Y)!",
                  choices = nomes, multiple = FALSE)
 
 

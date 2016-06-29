@@ -134,7 +134,6 @@ ui <-
                          box(title = "Formatação", solidHeader = TRUE, status = "danger",
                              width = NULL,
                              InserirTitulo_Bi,
-                             InserirEixo_Bi,
                              conditionalPanel(
                                condition = "input.tipo_Bi == 'Histograma'",
                                NumeroClasses_Bi
@@ -170,8 +169,7 @@ server <- function(input, output, session)
 # nome das colunas para selecionar as qualitativas
   output$nomes_das_colunas <- renderUI({
     dados <- dados(input)
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
-    else nomes <- as.matrix(colnames(dados$dados))
+    nomes <- as.matrix(colnames(dados$dados))
     
     UIselectqualitativa(nomes)
   })
@@ -179,8 +177,7 @@ server <- function(input, output, session)
 # função para a seleção das colunas a visualizar do banco de dados
   output$nomes_das_colunas2 <- renderUI({
     dados <- dados(input)
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
-    else nomes <- as.matrix(colnames(dados$dados))
+    nomes <- as.matrix(colnames(dados$dados))
     
     UIvervariaveis(nomes)
   })
@@ -188,8 +185,7 @@ server <- function(input, output, session)
 # Nome das colunas para fazer o gráfico de linhas
   output$nomes_das_colunas3 <- renderUI({
     dados <- dados(input)
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
-    else nomes <- as.matrix(colnames(dados$dados))
+    nomes <- as.matrix(colnames(dados$dados))
     
     UIvarlinhas(nomes)
   })
@@ -198,16 +194,13 @@ server <- function(input, output, session)
     dados <- dados(input)
     colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
+    if(length(colunas_numericas) == ncol(dados$dados))
+      nomes <- as.matrix(colnames(dados$dados))
     else{
-      if(length(colunas_numericas) == ncol(dados$dados))
-        nomes <- as.matrix(colnames(dados$dados))
-      else{
-        if(colunas_numericas[1] == 0)
-          nomes <- as.matrix("")
-        else
-          nomes <- as.matrix(colnames(dados$dados[colunas_numericas]))
-      }
+      if(colunas_numericas[1] == 0)
+        nomes <- as.matrix("")
+      else
+        nomes <- as.matrix(colnames(dados$dados[colunas_numericas]))
     }
     
     UIvarlinhas_Bi(nomes)
@@ -216,16 +209,13 @@ server <- function(input, output, session)
     dados <- dados(input)
     colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
+    if(colunas_numericas[1] == 0)
+      nomes <- as.matrix(colnames(dados$dados))
     else{
-      if(colunas_numericas[1] == 0)
-        nomes <- as.matrix(colnames(dados$dados))
-      else{
-        if(length(colunas_numericas) == ncol(dados$dados))
-          nomes <- as.matrix("")
-        else
-          nomes <- as.matrix(colnames(dados$dados[-colunas_numericas]))
-      }
+      if(length(colunas_numericas) == ncol(dados$dados))
+        nomes <- as.matrix("")
+      else
+        nomes <- as.matrix(colnames(dados$dados[-colunas_numericas]))
     }
     
     UIvarlinhas_Bi2(nomes)
@@ -235,16 +225,13 @@ server <- function(input, output, session)
     dados <- dados(input)
     colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
+    if(colunas_numericas[1] == 0)
+      nomes <- as.matrix(colnames(dados$dados))
     else{
-      if(colunas_numericas[1] == 0)
-        nomes <- as.matrix(colnames(dados$dados))
-      else{
-        if(length(colunas_numericas) == ncol(dados$dados))
-          nomes <- as.matrix("")
-        else
-          nomes <- as.matrix(colnames(dados$dados[-colunas_numericas]))
-      }
+      if(length(colunas_numericas) == ncol(dados$dados))
+        nomes <- as.matrix("")
+      else
+        nomes <- as.matrix(colnames(dados$dados[-colunas_numericas]))
     }
     UIvarquali(nomes)
   })
@@ -254,16 +241,13 @@ server <- function(input, output, session)
     dados <- dados(input)
     colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
+    if(colunas_numericas[1] == 0)
+      nomes <- as.matrix(colnames(dados$dados))
     else{
-      if(colunas_numericas[1] == 0)
-        nomes <- as.matrix(colnames(dados$dados))
-      else{
-        if(length(colunas_numericas) == ncol(dados$dados))
-          nomes <- as.matrix("")
-        else
-          nomes <- as.matrix(colnames(dados$dados[-colunas_numericas]))
-      }
+      if(length(colunas_numericas) == ncol(dados$dados))
+        nomes <- as.matrix("")
+      else
+        nomes <- as.matrix(colnames(dados$dados[-colunas_numericas]))
     }
     UIvarquali_Bi(nomes)
   })
@@ -272,16 +256,13 @@ server <- function(input, output, session)
     dados <- dados(input)
     colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
+    if(colunas_numericas[1] == 0)
+      nomes <- as.matrix(colnames(dados$dados))
     else{
-      if(colunas_numericas[1] == 0)
-        nomes <- as.matrix(colnames(dados$dados))
-      else{
-        if(length(colunas_numericas) == ncol(dados$dados))
-          nomes <- as.matrix("")
-        else
-          nomes <- as.matrix(colnames(dados$dados[-colunas_numericas]))
-      }
+      if(length(colunas_numericas) == ncol(dados$dados))
+        nomes <- as.matrix("")
+      else
+        nomes <- as.matrix(colnames(dados$dados[-colunas_numericas]))
     }
     UIvarquali_Bi2(nomes)
   })
@@ -291,16 +272,13 @@ server <- function(input, output, session)
     dados <- dados(input)
     colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
+    if(length(colunas_numericas) == ncol(dados$dados))
+      nomes <- as.matrix(colnames(dados$dados))
     else{
-      if(length(colunas_numericas) == ncol(dados$dados))
-        nomes <- as.matrix(colnames(dados$dados))
-      else{
-        if(colunas_numericas[1] == 0)
-          nomes <- as.matrix("")
-        else
-          nomes <- as.matrix(colnames(dados$dados[colunas_numericas]))
-      }
+      if(colunas_numericas[1] == 0)
+        nomes <- as.matrix("")
+      else
+        nomes <- as.matrix(colnames(dados$dados[colunas_numericas]))
     }
     UIvarquanti(nomes)
   })
@@ -310,33 +288,28 @@ server <- function(input, output, session)
     dados <- dados(input)
     colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
+    if(length(colunas_numericas) == ncol(dados$dados))
+      nomes <- as.matrix(colnames(dados$dados))
     else{
-      if(length(colunas_numericas) == ncol(dados$dados))
-        nomes <- as.matrix(colnames(dados$dados))
-      else{
-        if(colunas_numericas[1] == 0)
-          nomes <- as.matrix("")
-        else
-          nomes <- as.matrix(colnames(dados$dados[colunas_numericas]))
-      }
+      if(colunas_numericas[1] == 0)
+        nomes <- as.matrix("")
+      else
+        nomes <- as.matrix(colnames(dados$dados[colunas_numericas]))
     }
     UIvarquanti_Bi(nomes)
   })
+  
   output$nomes_das_colunas_quanti_Bi2 <- renderUI({
     dados <- dados(input)
     colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
-    if(dados$aux == 1)  nomes <- as.matrix("Escolha o arquivo com o banco de dados")
+    if(length(colunas_numericas) == ncol(dados$dados))
+      nomes <- as.matrix(colnames(dados$dados))
     else{
-      if(length(colunas_numericas) == ncol(dados$dados))
-        nomes <- as.matrix(colnames(dados$dados))
-      else{
-        if(colunas_numericas[1] == 0)
-          nomes <- as.matrix("")
-        else
-          nomes <- as.matrix(colnames(dados$dados[colunas_numericas]))
-      }
+      if(colunas_numericas[1] == 0)
+        nomes <- as.matrix("")
+      else
+        nomes <- as.matrix(colnames(dados$dados[colunas_numericas]))
     }
     UIvarquanti_Bi2(nomes)
   })
@@ -347,40 +320,36 @@ server <- function(input, output, session)
 # Tabela com os dados
   output$Dados <- renderDataTable({
     dados <- dados(input)
-    if(dados$aux == 1) as.matrix("Escolha o arquivo com o banco de dados")
-    else as.matrix(dados$dados[,input$show_vars, drop = FALSE])
+    as.matrix(dados$dados[,input$show_vars, drop = FALSE])
   }, options = list(pageLength = 10)
   )
 
 # table da tabela com as variáveis quantitativas ( númericas )
   output$TabelaDescritiva_quantitativa <- renderTable({
     dados <- dados(input)
-    if(dados$aux == 1) as.matrix("Escolha o arquivo com o banco de dados")
-    else{
-      Colunas_numeric <- Verificar_Variaveis(input)$Colunas_numericas
-      dados <- Verificar_Variaveis(input)$Dados
-      if(length(Colunas_numeric) == 1){
-        if(Colunas_numeric == 0) as.matrix("") else
-          Sumario(dados[Colunas_numeric])
-      }else
-        Sumario(dados[Colunas_numeric])  
-    }
+
+    Colunas_numeric <- Verificar_Variaveis(input)$Colunas_numericas
+    dados <- Verificar_Variaveis(input)$Dados
+    if(length(Colunas_numeric) == 1){
+      if(Colunas_numeric == 0) as.matrix("") else
+        Sumario(dados[Colunas_numeric])
+    }else
+      Sumario(dados[Colunas_numeric])
+    
   })
 
 # table da tabela com as variáveis qualitativas ( fatores )
   output$TabelaDescritiva_qualitativa <- renderTable({
     dados <- dados(input)
-    if(dados$aux == 1) as.matrix("Escolha o arquivo com o banco de dados")
-    else{
-      Colunas_numeric <- Verificar_Variaveis(input)$Colunas_numericas
-      dados <- Verificar_Variaveis(input)$Dados
-      if(length(Colunas_numeric) == ncol(dados) ) as.matrix("") else{
-        if(length(Colunas_numeric) == 1){
-          if(Colunas_numeric == 0) summary(dados)else
-            summary(dados[-Colunas_numeric])
-        }else
+    
+    Colunas_numeric <- Verificar_Variaveis(input)$Colunas_numericas
+    dados <- Verificar_Variaveis(input)$Dados
+    if(length(Colunas_numeric) == ncol(dados) ) as.matrix("") else{
+      if(length(Colunas_numeric) == 1){
+        if(Colunas_numeric == 0) summary(dados)else
           summary(dados[-Colunas_numeric])
-      }
+      }else
+        summary(dados[-Colunas_numeric])
     }
   })
 
@@ -401,21 +370,21 @@ server <- function(input, output, session)
     X <- dados[,colunaQuali]
     Frequencia <- dados[,colunaQuali]
     
+    Tema <- theme(panel.grid.major = element_line(size = 2),
+                  axis.title = element_text(size = 12),
+                  axis.text = element_text(size = 10),
+                  plot.title = element_text(size = 14),
+                  legend.background = element_rect())
+    
     BASE <- ggplot(data = dados,
                    aes(x = X, fill =  Frequencia ))
     
     Colunas <-  BASE + geom_bar(colour = "black",stat = "count") +
                 labs(x = xlab,y = "Frequência") + 
-                ggtitle(main) + 
+                ggtitle(main) + Tema +
                 #scale_fill_discrete (name="Tipos de Espécie") +
-                guides(fill=FALSE) + # Remove legend for a particular aesthetic (fill)
-                scale_fill_brewer(palette = "Set2") + 
-                theme(panel.grid.major = element_line(size = 2),
-                      axis.title = element_text(size = 12),
-                      axis.text = element_text(size = 10),
-                      plot.title = element_text(size = 14),
-                      legend.background = element_rect())
-    
+                guides(fill=FALSE) # Remove legend for a particular aesthetic (fill)
+                
     Pizza <- ggplot(data = dados,
                     aes(x = "", fill= dados[,colunaQuali]))+
                     geom_bar(width = 1, stat = "count") + coord_polar(theta = "y") + 
@@ -425,36 +394,31 @@ server <- function(input, output, session)
     Histograma <- ggplot(data = dados, aes(x = dados[,colunaQuanti]  )) + 
                   geom_histogram(aes(y = ..density..),
                   colour="black", fill="darkblue", bins = input$nclasses) +
-                  ggtitle(main) + labs(x = xlab,y = "Densidade")
+                  ggtitle(main) + labs(x = xlab,y = "Densidade") + Tema
     
     
     
     ### Gráficos Univariados
     
       if(input$tipo == "Colunas"){
-        if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
-          main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else grafico <- Colunas
+        req(input$SelecionarVariaveisQuali)
+        grafico <- Colunas
       }
       if(input$tipo == "Barras"){
-        if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
-          main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else grafico <- Colunas + coord_flip()
+        req(input$SelecionarVariaveisQuali)
+        grafico <- Colunas + coord_flip()
       }
       if(input$tipo == "Pizza"){
-        if(input$SelecionarVariaveisQuali=="") plot(c(0,10),c(0,10),type="n",
-          main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else return(Pizza)
+        req(input$SelecionarVariaveisQuali)
+        grafico <- Pizza
       }
       if(input$tipo == "Histograma"){
-        if(input$SelecionarVariaveisQuant=="") plot(c(0,10),c(0,10),type="n",
-          main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="")
-        else grafico <- Histograma
+        req(input$SelecionarVariaveisQuant)
+        grafico <- Histograma
       }
 
-      if(input$tipo == "Linhas") {
-        if(input$SelecionarGLinhas == "") plot(c(0,10),c(0,10),type="n",
-          main="Não Existe Variáveis para esse tipo de gráfico",axes=FALSE,xlab="",ylab="") else
+      if(input$tipo == "Linhas"){
+        req(input$SelecionarGLinhas)
         if(is.numeric(dados[,coluna])) {
           plot(hist(as.numeric(dados[,coluna]))$mids, hist(as.numeric(dados[,coluna]))$density, type = "b", pch = 16)
         } else {
@@ -476,8 +440,13 @@ server <- function(input, output, session)
     colunaQuanti2 <- which(colnames(dados) == input$SelecionarVariaveisQuant_Bi2)
     coluna <- which(colnames(dados) == input$SelecionarGLinhas_Bi)
     coluna2 <- which(colnames(dados) == input$SelecionarGLinhas_Bi2)
-    xlab <- input$text_eixo_Bi
     main <- input$text_titulo_Bi
+    
+    Tema <- theme(panel.grid.major = element_line(size = 2),
+                  axis.title = element_text(size = 12),
+                  axis.text = element_text(size = 10),
+                  plot.title = element_text(size = 14),
+                  legend.background = element_rect())
     
     dados2 <- data.frame(X = dados[,colunaQuali],Y = dados[,colunaQuali2])
     dados3 <- data.frame(X = dados[,coluna],Y = dados[,coluna2])
@@ -490,72 +459,59 @@ server <- function(input, output, session)
     BASE_Box <- ggplot(data = dados3,aes(x=Y, y=X, fill=Y))
     BASE_Pontos <- ggplot(dados4, aes(x=X, y=Y) )
     
-    Colunas <-  BASE + geom_bar( position = "fill", colour = "lightgreen")
-    Colunas2 <- BASE + geom_bar( position = "stack", colour = "lightgreen") 
-    Colunas3 <- BASE + geom_bar( position = "dodge", colour = "lightgreen")
+    Colunas <-  BASE + geom_bar( position = "fill", colour = "black") +
+                labs(y = "Frequência Relativa") + Tema + ggtitle(main)
+    Colunas2 <- BASE + geom_bar( position = "stack", colour = "black") +
+                labs(y = "Frequência") + Tema + ggtitle(main)
+    Colunas3 <- BASE + geom_bar( position = "dodge", colour = "black") +
+                labs(y = "Frequência") + Tema + ggtitle(main)
     
     Histograma<- BASE_Hist + geom_histogram(bins = input$nclasses_Bi, alpha=.5, 
-                                           position="identity")
-    BoxPlot <- BASE_Box  + geom_boxplot()
-    Pontos <- BASE_Pontos + geom_point(shape=1) + geom_smooth(method=lm)
+                                           position="identity") + Tema + 
+                 labs(y = "Frequência") + ggtitle(main)
     
-    ### Gráficos Univariados
+    BoxPlot <- BASE_Box  + geom_boxplot() + Tema + labs(x = "", y = "X") + ggtitle(main)
+    Pontos <- BASE_Pontos + geom_point(shape=1) + geom_smooth(method=lm) + Tema + ggtitle(main)
+    
+    ### Gráficos Bivariados
     
     if(req(input$tipo_Bi) == "Colunas"){
-      if(input$SelecionarVariaveisQuali_Bi=="" | input$SelecionarVariaveisQuali_Bi2=="") 
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- Colunas
+      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
+      grafico <- Colunas
     }
     if(input$tipo_Bi == "Colunas2"){
-      if(input$SelecionarVariaveisQuali_Bi=="" | input$SelecionarVariaveisQuali_Bi2=="") 
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- Colunas2
+      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
+      grafico <- Colunas2
     }
     if(input$tipo_Bi == "Colunas3"){
-      if(input$SelecionarVariaveisQuali_Bi=="" | input$SelecionarVariaveisQuali_Bi2=="") 
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- Colunas3
+      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
+      grafico <- Colunas3
     }
     if(input$tipo_Bi == "Barras"){
-      if(input$SelecionarVariaveisQuali_Bi=="" | input$SelecionarVariaveisQuali_Bi2=="") 
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- Colunas + coord_flip()
+      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
+      grafico <- Colunas + coord_flip()
     }
     if(input$tipo_Bi == "Barras2"){
-      if(input$SelecionarVariaveisQuali_Bi=="" | input$SelecionarVariaveisQuali_Bi2=="") 
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- Colunas2 + coord_flip()
+      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
+      grafico <- Colunas2 + coord_flip()
     }
     if(input$tipo_Bi == "Barras3"){
-      if(input$SelecionarVariaveisQuali_Bi=="" | input$SelecionarVariaveisQuali_Bi2=="") 
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- Colunas3 + coord_flip()
+      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
+      grafico <- Colunas3 + coord_flip()
     }
     
     if(input$tipo_Bi == "Histograma"){
-      if(input$SelecionarGLinhas_Bi=="" | input$SelecionarGLinhas_Bi2=="")
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- Histograma
+      req(input$SelecionarGLinhas_Bi, input$SelecionarGLinhas_Bi2)
+      grafico <- Histograma
     }
     
     if(input$tipo_Bi == "BoxPlot"){
-      if(input$SelecionarGLinhas_Bi=="" | input$SelecionarGLinhas_Bi2=="")
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- BoxPlot
+      req(input$SelecionarGLinhas_Bi, input$SelecionarGLinhas_Bi2)
+      grafico <- BoxPlot
     }
     if(input$tipo_Bi == "Pontos"){
-      if(input$SelecionarVariaveisQuant_Bi=="" | input$SelecionarVariaveisQuant_Bi2=="") 
-        plot(c(0,10),c(0,10),type="n",main="Não Existe Variáveis para esse tipo de gráfico",
-             axes=FALSE,xlab="",ylab="")
-      else grafico <- Pontos
+      req(input$SelecionarVariaveisQuant_Bi, input$SelecionarVariaveisQuant_Bi2)
+      grafico <- Pontos
     }
 
     ggplotly(grafico)
