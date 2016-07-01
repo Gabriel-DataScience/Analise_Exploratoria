@@ -9,5 +9,6 @@ if(!require(fBasics)){install.packages("fBasics");library(fBasics)}
 if(!require(shinydashboard)){install.packages("shinydashboard");library(shinydashboard)}
 if(!require(pryr)){install.packages("pryr");library(pryr)}
 if(!require(plotly)){install.packages("plotly");library(plotly)}
+if(!require(plyr)){install.packages("plyr");library(plyr)}
 
 #------------------------------------------------------------------------------#

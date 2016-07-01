@@ -115,7 +115,8 @@ ui <-
                                input.tipo_Bi == 'Colunas3' |
                                input.tipo_Bi == 'Barras'|
                                input.tipo_Bi == 'Barras2'|
-                               input.tipo_Bi == 'Barras3'",
+                               input.tipo_Bi == 'Barras3'|
+                               input.tipo_Bi == 'Linhas qualitativas'",
                                uiOutput("nomes_das_colunas_quali_Bi"),
                                uiOutput("nomes_das_colunas_quali_Bi2")
                              ), 
@@ -125,7 +126,7 @@ ui <-
                                uiOutput("nomes_das_colunas_quanti_Bi2")
                              ),
                              conditionalPanel(
-                               condition = "input.tipo_Bi == 'Linhas'|
+                               condition = "input.tipo_Bi == 'Linhas densidades'|
                                input.tipo_Bi == 'Histograma' |
                                input.tipo_Bi == 'BoxPlot'",
                                uiOutput("nomes_das_colunas3_Bi"),
@@ -362,11 +363,16 @@ server <- function(input, output, session)
   output$grafico <- renderPlotly({
     dados <- Verificar_Variaveis(input)$Dados
     Colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
+    
+    # req( all(Colunas_numericas) != 0)
+    # req(length(Colunas_numericas) < ncol(dados) )
+    
     colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali)
     colunaQuanti <- which(colnames(dados) == input$SelecionarVariaveisQuant)
     coluna <- which(colnames(dados) == input$SelecionarGLinhas)
     xlab <- input$text_eixo
     main <- input$text_titulo
+    
     X <- dados[,colunaQuali]
     Frequencia <- dados[,colunaQuali]
     
@@ -376,20 +382,20 @@ server <- function(input, output, session)
                   plot.title = element_text(size = 14),
                   legend.background = element_rect())
     
-    BASE <- ggplot(data = dados,
-                   aes(x = X, fill =  Frequencia ))
+    BASE <- ggplot(data = dados, aes(x = X, fill =  Frequencia ))
     
     Colunas <-  BASE + geom_bar(colour = "black",stat = "count") +
                 labs(x = xlab,y = "Frequência") + 
                 ggtitle(main) + Tema +
-                #scale_fill_discrete (name="Tipos de Espécie") +
                 guides(fill=FALSE) # Remove legend for a particular aesthetic (fill)
                 
-    Pizza <- ggplot(data = dados,
-                    aes(x = "", fill= dados[,colunaQuali]))+
-                    geom_bar(width = 1, stat = "count") + coord_polar(theta = "y") + 
-                    ggtitle(main) + 
-                    theme(axis.title.x = element_blank(),axis.title.y = element_blank())
+    # Pizza <- ggplot(data = dados,
+    #                 aes(x = "", fill= dados[,colunaQuali]))+
+    #                 geom_bar(width = 1, stat = "count") + coord_polar(theta = "y") + 
+    #                 ggtitle(main) + 
+    #                 theme(axis.title.x = element_blank(),axis.title.y = element_blank())
+    Pizza <- plot_ly(data.frame(X = names( table(X)), Frequencia = as.numeric( table(X)) ) , 
+                     labels = X, values = Frequencia, type = "pie") %>% layout(title = main)
     
     Histograma <- ggplot(data = dados, aes(x = dados[,colunaQuanti]  )) + 
                   geom_histogram(aes(y = ..density..),
@@ -417,15 +423,15 @@ server <- function(input, output, session)
         grafico <- Histograma
       }
 
-      if(input$tipo == "Linhas"){
-        req(input$SelecionarGLinhas)
-        if(is.numeric(dados[,coluna])) {
-          plot(hist(as.numeric(dados[,coluna]))$mids, hist(as.numeric(dados[,coluna]))$density, type = "b", pch = 16)
-        } else {
-          plot(as.numeric(table(dados[, coluna])), type = "b", pch = 16)
-        }
-      }
-    ggplotly(grafico)
+      # if(input$tipo == "Linhas"){
+      #   req(input$SelecionarGLinhas)
+      #   if(is.numeric(dados[,coluna])) {
+      #     plot(hist(as.numeric(dados[,coluna]))$mids, hist(as.numeric(dados[,coluna]))$density, type = "b", pch = 16)
+      #   } else {
+      #     plot(as.numeric(table(dados[, coluna])), type = "b", pch = 16)
+      #   }
+      # }
+    if(input$tipo == "Pizza") grafico else ggplotly(grafico)
   })
   
    ### Gráficos Bivariados
@@ -473,6 +479,11 @@ server <- function(input, output, session)
     BoxPlot <- BASE_Box  + geom_boxplot() + Tema + labs(x = "", y = "X") + ggtitle(main)
     Pontos <- BASE_Pontos + geom_point(shape=1) + geom_smooth(method=lm) + Tema + ggtitle(main)
     
+    aux <- count(dados2, vars = c("X","Y"))
+    Linhas <- ggplot(data = aux, aes( x = X, y = freq ,group = Y, colour = Y)) + geom_line() +
+      geom_point() + Tema + ggtitle(main) + labs(x = "X", y = "Frequência")
+    
+    
     ### Gráficos Bivariados
     
     if(req(input$tipo_Bi) == "Colunas"){
@@ -513,6 +524,20 @@ server <- function(input, output, session)
       req(input$SelecionarVariaveisQuant_Bi, input$SelecionarVariaveisQuant_Bi2)
       grafico <- Pontos
     }
+    if(input$tipo_Bi == "Linhas qualitativas"){
+      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
+      
+      grafico <- Linhas
+    }
+    if(input$tipo_Bi == "Linhas densidades"){
+      req(input$SelecionarGLinhas_Bi, input$SelecionarGLinhas_Bi2)
+      
+      #now make your lovely plot
+      grafico <- ggplot(dados3, aes(X, fill = Y)) + geom_density(alpha = 0.2) + 
+        Tema + ggtitle(main) + labs( y = "Densidade")
+      
+    }
+    
 
     ggplotly(grafico)
   })

@@ -49,7 +49,7 @@ TipoGrafico <-
 TipoGrafico_Bi <-
   selectInput(inputId = "tipo_Bi", label = "Tipo de gráfico",
               choices = c("Colunas","Colunas2","Colunas3", "Barras","Barras2","Barras3",
-                          "Histograma", "Linhas", "Pontos", "BoxPlot"))
+                          "Histograma", "Linhas qualitativas", "Linhas densidades", "Pontos", "BoxPlot"))
 
 
 # inserir o título do gráfico
@@ -110,10 +110,10 @@ UIvarquali <- function(nomes)
 
 UIvarquali_Bi <- function(nomes)
   selectizeInput(inputId = "SelecionarVariaveisQuali_Bi", "Selecione a variável (X)!",
-                 choices = nomes, multiple = FALSE)
+                 choices = req(nomes), multiple = FALSE)
 UIvarquali_Bi2 <- function(nomes)
   selectizeInput(inputId = "SelecionarVariaveisQuali_Bi2", "Selecione a variável (Y)!",
-                 choices = nomes, multiple = FALSE)
+                 choices = req(nomes), multiple = FALSE)
 
 # Selecionar variáveis quantitativas para o gráfico
 UIvarquanti <- function(nomes)
