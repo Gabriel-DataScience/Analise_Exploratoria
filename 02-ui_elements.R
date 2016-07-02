@@ -43,7 +43,7 @@ radioButtons(inputId = "dec", label = "Decimal",
 # Selecionar o tipo de gráfico
 TipoGrafico <-
   selectInput(inputId = "tipo", label = "Tipo de gráfico",
-              choices = c("Colunas", "Barras", "Pizza", "Histograma", "Linhas"))
+              choices = c("Colunas", "Barras", "Pizza", "Histograma"))
 
 # Selecionar o tipo de gráfico bivariado
 TipoGrafico_Bi <-
@@ -110,10 +110,10 @@ UIvarquali <- function(nomes)
 
 UIvarquali_Bi <- function(nomes)
   selectizeInput(inputId = "SelecionarVariaveisQuali_Bi", "Selecione a variável (X)!",
-                 choices = req(nomes), multiple = FALSE)
+                 choices = nomes, multiple = FALSE)
 UIvarquali_Bi2 <- function(nomes)
   selectizeInput(inputId = "SelecionarVariaveisQuali_Bi2", "Selecione a variável (Y)!",
-                 choices = req(nomes), multiple = FALSE)
+                 choices = nomes, multiple = FALSE)
 
 # Selecionar variáveis quantitativas para o gráfico
 UIvarquanti <- function(nomes)

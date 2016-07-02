@@ -362,183 +362,159 @@ server <- function(input, output, session)
   
   output$grafico <- renderPlotly({
     dados <- Verificar_Variaveis(input)$Dados
-    Colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
+#    Colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
     
     # req( all(Colunas_numericas) != 0)
     # req(length(Colunas_numericas) < ncol(dados) )
     
-    colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali)
-    colunaQuanti <- which(colnames(dados) == input$SelecionarVariaveisQuant)
-    coluna <- which(colnames(dados) == input$SelecionarGLinhas)
+#    coluna <- which(colnames(dados) == input$SelecionarGLinhas)
+    
     xlab <- input$text_eixo
     main <- input$text_titulo
-    
-    X <- dados[,colunaQuali]
-    Frequencia <- dados[,colunaQuali]
-    
     Tema <- theme(panel.grid.major = element_line(size = 2),
                   axis.title = element_text(size = 12),
                   axis.text = element_text(size = 10),
                   plot.title = element_text(size = 14),
                   legend.background = element_rect())
     
-    BASE <- ggplot(data = dados, aes(x = X, fill =  Frequencia ))
-    
-    Colunas <-  BASE + geom_bar(colour = "black",stat = "count") +
-                labs(x = xlab,y = "Frequência") + 
-                ggtitle(main) + Tema +
-                guides(fill=FALSE) # Remove legend for a particular aesthetic (fill)
-                
-    # Pizza <- ggplot(data = dados,
-    #                 aes(x = "", fill= dados[,colunaQuali]))+
-    #                 geom_bar(width = 1, stat = "count") + coord_polar(theta = "y") + 
-    #                 ggtitle(main) + 
-    #                 theme(axis.title.x = element_blank(),axis.title.y = element_blank())
-    Pizza <- plot_ly(data.frame(X = names( table(X)), Frequencia = as.numeric( table(X)) ) , 
-                     labels = X, values = Frequencia, type = "pie") %>% layout(title = main)
-    
-    Histograma <- ggplot(data = dados, aes(x = dados[,colunaQuanti]  )) + 
-                  geom_histogram(aes(y = ..density..),
-                  colour="black", fill="darkblue", bins = input$nclasses) +
-                  ggtitle(main) + labs(x = xlab,y = "Densidade") + Tema
-    
-    
     
     ### Gráficos Univariados
     
-      if(input$tipo == "Colunas"){
+      if(any(c("Barras","Pizza","Colunas") == input$tipo)){
         req(input$SelecionarVariaveisQuali)
-        grafico <- Colunas
+        
+        colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali)
+        
+        X <- dados[,colunaQuali]
+        Frequencia <- dados[,colunaQuali]
+        
+        BASE <- ggplot(data = dados, aes(x = X, fill =  Frequencia ))
+        
+        Colunas <-  BASE + geom_bar(colour = "black",stat = "count") +
+          labs(x = xlab,y = "Frequência") + 
+          ggtitle(main) + Tema +
+          guides(fill=FALSE) # Remove legend for a particular aesthetic (fill)
+        
+        # Pizza <- ggplot(data = dados,
+        #                 aes(x = "", fill= dados[,colunaQuali]))+
+        #                 geom_bar(width = 1, stat = "count") + coord_polar(theta = "y") + 
+        #                 ggtitle(main) + 
+        #                 theme(axis.title.x = element_blank(),axis.title.y = element_blank())
+        Pizza <- plot_ly(data.frame(X = names( table(X)), Frequencia = as.numeric( table(X)) ) , 
+                         labels = X, values = Frequencia, type = "pie") %>% layout(title = main)
+        
+        
+        if(input$tipo == "Barras") grafico <- Colunas + coord_flip() 
+        if(input$tipo == "Pizza") grafico <- Pizza
+        if(input$tipo == "Colunas") grafico <- Colunas
       }
-      if(input$tipo == "Barras"){
-        req(input$SelecionarVariaveisQuali)
-        grafico <- Colunas + coord_flip()
-      }
-      if(input$tipo == "Pizza"){
-        req(input$SelecionarVariaveisQuali)
-        grafico <- Pizza
-      }
-      if(input$tipo == "Histograma"){
+      
+      if(any(c("Histograma") == input$tipo)){
         req(input$SelecionarVariaveisQuant)
-        grafico <- Histograma
+        
+        colunaQuanti <- which(colnames(dados) == input$SelecionarVariaveisQuant)
+        
+        Histograma <- ggplot(data = dados, aes(x = dados[,colunaQuanti]  )) + 
+          geom_histogram(aes(y = ..density..),
+                         colour="black", fill="darkblue", bins = input$nclasses) +
+          ggtitle(main) + labs(x = xlab,y = "Densidade") + Tema
+        
+#         Linhas <- ggplot(data = dados, aes(x = dados[,colunaQuanti]  )) + 
+#           geom_freqpoly(aes(y = ..density..),
+#                          colour="black", fill="darkblue", bins = input$nclasses) +
+#           ggtitle(main) + labs(x = xlab,y = "Densidade") + Tema
+        
+          grafico <- Histograma
       }
 
-      # if(input$tipo == "Linhas"){
-      #   req(input$SelecionarGLinhas)
-      #   if(is.numeric(dados[,coluna])) {
-      #     plot(hist(as.numeric(dados[,coluna]))$mids, hist(as.numeric(dados[,coluna]))$density, type = "b", pch = 16)
-      #   } else {
-      #     plot(as.numeric(table(dados[, coluna])), type = "b", pch = 16)
-      #   }
-      # }
-    if(input$tipo == "Pizza") grafico else ggplotly(grafico)
+     if(input$tipo == "Pizza") grafico else ggplotly(grafico)
   })
   
    ### Gráficos Bivariados
   
   output$grafico_Bi <- renderPlotly({
+    
     dados <- Verificar_Variaveis(input)$Dados
     
-#    Colunas_numericas <- Verificar_Variaveis(input)$Colunas_numericas
-    colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali_Bi)
-    colunaQuali2 <- which(colnames(dados) == input$SelecionarVariaveisQuali_Bi2)
-    colunaQuanti <- which(colnames(dados) == input$SelecionarVariaveisQuant_Bi)
-    colunaQuanti2 <- which(colnames(dados) == input$SelecionarVariaveisQuant_Bi2)
-    coluna <- which(colnames(dados) == input$SelecionarGLinhas_Bi)
-    coluna2 <- which(colnames(dados) == input$SelecionarGLinhas_Bi2)
     main <- input$text_titulo_Bi
-    
     Tema <- theme(panel.grid.major = element_line(size = 2),
                   axis.title = element_text(size = 12),
                   axis.text = element_text(size = 10),
                   plot.title = element_text(size = 14),
                   legend.background = element_rect())
     
-    dados2 <- data.frame(X = dados[,colunaQuali],Y = dados[,colunaQuali2])
-    dados3 <- data.frame(X = dados[,coluna],Y = dados[,coluna2])
-    dados4 <- data.frame(X = dados[,colunaQuanti],Y = dados[,colunaQuanti2])
-    
-    BASE <- ggplot(data = dados2,
-                   aes(x = X, fill =  Y ))
-    BASE_Hist <- ggplot(data = dados3,
-                   aes(x = X, fill =  Y ))
-    BASE_Box <- ggplot(data = dados3,aes(x=Y, y=X, fill=Y))
-    BASE_Pontos <- ggplot(dados4, aes(x=X, y=Y) )
-    
-    Colunas <-  BASE + geom_bar( position = "fill", colour = "black") +
-                labs(y = "Frequência Relativa") + Tema + ggtitle(main)
-    Colunas2 <- BASE + geom_bar( position = "stack", colour = "black") +
-                labs(y = "Frequência") + Tema + ggtitle(main)
-    Colunas3 <- BASE + geom_bar( position = "dodge", colour = "black") +
-                labs(y = "Frequência") + Tema + ggtitle(main)
-    
-    Histograma<- BASE_Hist + geom_histogram(bins = input$nclasses_Bi, alpha=.5, 
-                                           position="identity") + Tema + 
-                 labs(y = "Frequência") + ggtitle(main)
-    
-    BoxPlot <- BASE_Box  + geom_boxplot() + Tema + labs(x = "", y = "X") + ggtitle(main)
-    Pontos <- BASE_Pontos + geom_point(shape=1) + geom_smooth(method=lm) + Tema + ggtitle(main)
-    
-    aux <- count(dados2, vars = c("X","Y"))
-    Linhas <- ggplot(data = aux, aes( x = X, y = freq ,group = Y, colour = Y)) + geom_line() +
-      geom_point() + Tema + ggtitle(main) + labs(x = "X", y = "Frequência")
-    
-    
     ### Gráficos Bivariados
-    
-    if(req(input$tipo_Bi) == "Colunas"){
+#------- Só variáveis qualitativas
+    if( any(c("Colunas","Colunas2","Colunas3", "Linhas qualitativas",
+              "Barras","Barras2","Barras3") == input$tipo_Bi) ){
       req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
-      grafico <- Colunas
+      
+      colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali_Bi)
+      colunaQuali2 <- which(colnames(dados) == input$SelecionarVariaveisQuali_Bi2)
+      
+      dados2 <- data.frame(X = dados[,colunaQuali],Y = dados[,colunaQuali2])
+      
+      BASE <- ggplot(data = dados2, aes(x = X, fill =  Y ))
+      
+      Colunas <-  BASE + geom_bar( position = "fill", colour = "black") +
+        labs(y = "Frequência Relativa") + Tema + ggtitle(main)
+      Colunas2 <- BASE + geom_bar( position = "stack", colour = "black") +
+        labs(y = "Frequência") + Tema + ggtitle(main)
+      Colunas3 <- BASE + geom_bar( position = "dodge", colour = "black") +
+        labs(y = "Frequência") + Tema + ggtitle(main)
+      
+      aux <- count(dados2, vars = c("X","Y"))
+      Linhas <- ggplot(data = aux, aes( x = X, y = freq ,group = Y, colour = Y)) + geom_line() +
+        geom_point() + Tema + ggtitle(main) + labs(x = "X", y = "Frequência")
+        
+      if(input$tipo_Bi == "Colunas") grafico <- Colunas
+      if(input$tipo_Bi == "Colunas2") grafico <- Colunas2
+      if(input$tipo_Bi == "Colunas3") grafico <- Colunas3
+      if(input$tipo_Bi == "Barras") grafico <- Colunas + coord_flip()
+      if(input$tipo_Bi == "Barras2") grafico <- Colunas2 + coord_flip()
+      if(input$tipo_Bi == "Barras3") grafico <- Colunas3 + coord_flip()
+      if(input$tipo_Bi == "Linhas qualitativas") grafico <- Linhas
     }
-    if(input$tipo_Bi == "Colunas2"){
-      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
-      grafico <- Colunas2
-    }
-    if(input$tipo_Bi == "Colunas3"){
-      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
-      grafico <- Colunas3
-    }
-    if(input$tipo_Bi == "Barras"){
-      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
-      grafico <- Colunas + coord_flip()
-    }
-    if(input$tipo_Bi == "Barras2"){
-      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
-      grafico <- Colunas2 + coord_flip()
-    }
-    if(input$tipo_Bi == "Barras3"){
-      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
-      grafico <- Colunas3 + coord_flip()
-    }
-    
-    if(input$tipo_Bi == "Histograma"){
+#------- Variáveis qualitativa e quantitativa
+    if( any(c("Histograma", "BoxPlot", "Linhas densidades") == input$tipo_Bi) ){
       req(input$SelecionarGLinhas_Bi, input$SelecionarGLinhas_Bi2)
-      grafico <- Histograma
+      
+      coluna <- which(colnames(dados) == input$SelecionarGLinhas_Bi)
+      coluna2 <- which(colnames(dados) == input$SelecionarGLinhas_Bi2)
+      
+      dados3 <- data.frame(X = dados[,coluna],Y = dados[,coluna2])
+      
+      BASE_Hist <- ggplot( data = dados3, aes(x = X, fill =  Y ) )
+      BASE_Box <- ggplot( data = dados3, aes(x=Y, y=X, fill=Y) )
+      
+      Histograma<- BASE_Hist + 
+        geom_histogram( bins=input$nclasses_Bi, alpha=.7, position="identity") + 
+        Tema + labs(y = "Frequência") + ggtitle(main)
+      
+      BoxPlot <- BASE_Box + geom_boxplot() + Tema + labs(x = "", y = "X") + ggtitle(main)
+      
+      if(input$tipo_Bi == "Histograma") grafico <- Histograma
+      if(input$tipo_Bi == "BoxPlot") grafico <- BoxPlot
+      if(input$tipo_Bi == "Linhas densidades")
+        grafico <- ggplot(dados3, aes(X, fill = Y)) + geom_density(alpha = 0.2) + 
+          Tema + ggtitle(main) + labs( y = "Densidade")
     }
     
-    if(input$tipo_Bi == "BoxPlot"){
-      req(input$SelecionarGLinhas_Bi, input$SelecionarGLinhas_Bi2)
-      grafico <- BoxPlot
-    }
-    if(input$tipo_Bi == "Pontos"){
+#------- Só variáveis quantitativas
+    if(any(c("Pontos") == input$tipo_Bi) ){
       req(input$SelecionarVariaveisQuant_Bi, input$SelecionarVariaveisQuant_Bi2)
+      
+      colunaQuanti <- which(colnames(dados) == input$SelecionarVariaveisQuant_Bi)
+      colunaQuanti2 <- which(colnames(dados) == input$SelecionarVariaveisQuant_Bi2)
+      
+      dados4 <- data.frame(X = dados[,colunaQuanti],Y = dados[,colunaQuanti2])
+      
+      BASE_Pontos <- ggplot(dados4, aes(x=X, y=Y) )
+      Pontos <- BASE_Pontos + geom_point(shape=1) + geom_smooth(method=lm) + Tema + ggtitle(main)
+      
       grafico <- Pontos
     }
-    if(input$tipo_Bi == "Linhas qualitativas"){
-      req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
-      
-      grafico <- Linhas
-    }
-    if(input$tipo_Bi == "Linhas densidades"){
-      req(input$SelecionarGLinhas_Bi, input$SelecionarGLinhas_Bi2)
-      
-      #now make your lovely plot
-      grafico <- ggplot(dados3, aes(X, fill = Y)) + geom_density(alpha = 0.2) + 
-        Tema + ggtitle(main) + labs( y = "Densidade")
-      
-    }
     
-
     ggplotly(grafico)
   })
   
