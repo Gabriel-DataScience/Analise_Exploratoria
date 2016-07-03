@@ -10,14 +10,14 @@ source("03-ui_Tutor.R", encoding = "UTF-8")
 
 ui <- 
   dashboardPage( skin = "red",
-    dashboardHeader(title = "Estatistica"),
+    dashboardHeader(title = "Análise Exploratória"),
     dashboardSidebar(
       sidebarMenu(
         menuItem("Tutorial", tabName = "Tutorial", icon = icon("fa fa-book")),
         menuItem("Dados", tabName = "Dados", icon = icon("fa fa-usb")),
         menuItem("Descritiva", tabName = "Descritiva", icon = icon("fa fa-list-alt")),
-        menuItem("Gráficos Univariados", tabName = "Graficos", icon = icon("fa fa-bar-chart")),
-        menuItem("Gráficos Bivariados", tabName = "Graficos_Bi", icon = icon("fa fa-bar-chart"))
+        menuItem("Gráficos Univariados", tabName = "Graficos", icon = icon("fa fa-pie-chart")),
+        menuItem("Gráficos Bivariados", tabName = "Graficos_Bi", icon = icon("fa fa-line-chart"))
         
       )
     ),
@@ -25,6 +25,10 @@ ui <-
       tabItems(
         tabItem(tabName = "Tutorial",
                 titlePanel("Tutorial para usar o aplicativo"),
+                box(title = "", status = "danger", width = 15,
+                    solidHeader = FALSE,
+                    p(strong("Produção:"),"Gabriel Fernandes e Lissandra Parente"),
+                    p("Estatística, Universidade Federal do Ceará, 2016.")),
                 Tutorial
         ),
 #------------------------------------------------------------------------------#
