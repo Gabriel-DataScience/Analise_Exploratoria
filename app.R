@@ -4,6 +4,7 @@
 source("00-init.R", encoding = "UTF-8")
 source("02-ui_elements.R", encoding = "UTF-8")
 source("01-fnct-plot.R", encoding = "UTF-8")
+source("03-ui_Tutor.R", encoding = "UTF-8")
 # Início Pagina do Usuário
 #------------------------------------------------------------------------------#
 
@@ -23,8 +24,8 @@ ui <-
     dashboardBody(
       tabItems(
         tabItem(tabName = "Tutorial",
-                titlePanel("Tutorial para abrir o banco de dados"),
-                paste("  Esse é o Tutorial para abrir o banco de dados")
+                titlePanel("Tutorial para usar o aplicativo"),
+                Tutorial
         ),
 #------------------------------------------------------------------------------#
         tabItem(tabName = "Dados",
@@ -383,7 +384,8 @@ server <- function(input, output, session)
       if(any(c("Barras","Pizza","Colunas") == input$tipo)){
         req(input$SelecionarVariaveisQuali)
         
-        colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali)
+        ## número da coluna qualitativa
+        colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali) 
         
         X <- dados[,colunaQuali]
         Frequencia <- dados[,colunaQuali]
@@ -395,11 +397,6 @@ server <- function(input, output, session)
           ggtitle(main) + Tema +
           guides(fill=FALSE) # Remove legend for a particular aesthetic (fill)
         
-        # Pizza <- ggplot(data = dados,
-        #                 aes(x = "", fill= dados[,colunaQuali]))+
-        #                 geom_bar(width = 1, stat = "count") + coord_polar(theta = "y") + 
-        #                 ggtitle(main) + 
-        #                 theme(axis.title.x = element_blank(),axis.title.y = element_blank())
         Pizza <- plot_ly(data.frame(X = names( table(X)), Frequencia = as.numeric( table(X)) ) , 
                          labels = X, values = Frequencia, type = "pie") %>% layout(title = main)
         
@@ -418,11 +415,6 @@ server <- function(input, output, session)
           geom_histogram(aes(y = ..density..),
                          colour="black", fill="darkblue", bins = input$nclasses) +
           ggtitle(main) + labs(x = xlab,y = "Densidade") + Tema
-        
-#         Linhas <- ggplot(data = dados, aes(x = dados[,colunaQuanti]  )) + 
-#           geom_freqpoly(aes(y = ..density..),
-#                          colour="black", fill="darkblue", bins = input$nclasses) +
-#           ggtitle(main) + labs(x = xlab,y = "Densidade") + Tema
         
           grafico <- Histograma
       }
