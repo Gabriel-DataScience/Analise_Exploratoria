@@ -87,19 +87,23 @@ ui <-
                             conditionalPanel(
                               condition = "input.tipo == 'Histograma'",
                                 uiOutput("nomes_das_colunas_quanti")
-                            ),
-                            conditionalPanel(
-                              condition = "input.tipo == 'Linhas'",
-                                uiOutput("nomes_das_colunas3"))
+                            )
                           ),
                           box(title = "Formatação", solidHeader = TRUE, status = "danger",
                             width = NULL,
+                          
                             InserirTitulo,
-                            InserirEixo,
+                            conditionalPanel(
+                              condition = "input.tipo == 'Colunas' | 
+                                input.tipo == 'Barras' |
+                                input.tipo == 'Histograma'",
+                              InserirEixo
+                            ),
                             conditionalPanel(
                               condition = "input.tipo == 'Histograma'",
                               NumeroClasses
                             )
+                            
                           )
                   ),
                   column(8, 
@@ -115,12 +119,12 @@ ui <-
                              TipoGrafico_Bi,
                              conditionalPanel( 
                                condition = 
-                               "input.tipo_Bi == 'Colunas' |
-                               input.tipo_Bi == 'Colunas2' |
-                               input.tipo_Bi == 'Colunas3' |
-                               input.tipo_Bi == 'Barras'|
-                               input.tipo_Bi == 'Barras2'|
-                               input.tipo_Bi == 'Barras3'|
+                               "input.tipo_Bi == 'Colunas Superpostas Prop.' |
+                               input.tipo_Bi == 'Colunas Superpostas' |
+                               input.tipo_Bi == 'Colunas Justapostas' |
+                               input.tipo_Bi == 'Barras Superpostas Prop.'|
+                               input.tipo_Bi == 'Barras Superpostas'|
+                               input.tipo_Bi == 'Barras Justapostas'|
                                input.tipo_Bi == 'Linhas qualitativas'",
                                uiOutput("nomes_das_colunas_quali_Bi"),
                                uiOutput("nomes_das_colunas_quali_Bi2")
@@ -392,17 +396,17 @@ server <- function(input, output, session)
         colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali) 
         
         X <- dados[,colunaQuali]
-        Frequencia <- dados[,colunaQuali]
+#        Frequencia <- dados[,colunaQuali]
         
-        BASE <- ggplot(data = dados, aes(x = X, fill =  Frequencia ))
+        BASE <- ggplot(data = dados, aes(x = X, fill =  X ))
         
         Colunas <-  BASE + geom_bar(colour = "black",stat = "count") +
           labs(x = xlab,y = "Frequência") + 
           ggtitle(main) + Tema +
           guides(fill=FALSE) # Remove legend for a particular aesthetic (fill)
         
-        Pizza <- plot_ly(data.frame(X = names( table(X)), Frequencia = as.numeric( table(X)) ) , 
-                         labels = X, values = Frequencia, type = "pie") %>% layout(title = main)
+        Pizza <- plot_ly(data.frame(X = names( table(X)), x = as.numeric( table(X)) ) , 
+                         labels = X, values = x, type = "pie") %>% layout(title = main)
         
         
         if(input$tipo == "Barras") grafico <- Colunas + coord_flip() 
@@ -414,8 +418,8 @@ server <- function(input, output, session)
         req(input$SelecionarVariaveisQuant)
         
         colunaQuanti <- which(colnames(dados) == input$SelecionarVariaveisQuant)
-        
-        Histograma <- ggplot(data = dados, aes(x = dados[,colunaQuanti]  )) + 
+        X <- dados[,colunaQuanti]
+        Histograma <- ggplot(data = dados, aes(x = X)) + 
           geom_histogram(aes(y = ..density..),
                          colour="black", fill="darkblue", bins = input$nclasses) +
           ggtitle(main) + labs(x = xlab,y = "Densidade") + Tema
@@ -441,8 +445,9 @@ server <- function(input, output, session)
     
     ### Gráficos Bivariados
 #------- Só variáveis qualitativas
-    if( any(c("Colunas","Colunas2","Colunas3", "Linhas qualitativas",
-              "Barras","Barras2","Barras3") == input$tipo_Bi) ){
+    if( any(c("Colunas Superpostas Prop.","Colunas Superpostas","Colunas Justapostas", 
+              "Linhas qualitativas","Barras Superpostas Prop.",
+              "Barras Superpostas","Barras Justapostas") == input$tipo_Bi) ){
       req(input$SelecionarVariaveisQuali_Bi, input$SelecionarVariaveisQuali_Bi2)
       
       colunaQuali <- which(colnames(dados) == input$SelecionarVariaveisQuali_Bi)
@@ -463,12 +468,12 @@ server <- function(input, output, session)
       Linhas <- ggplot(data = aux, aes( x = X, y = freq ,group = Y, colour = Y)) + geom_line() +
         geom_point() + Tema + ggtitle(main) + labs(x = "X", y = "Frequência")
         
-      if(input$tipo_Bi == "Colunas") grafico <- Colunas
-      if(input$tipo_Bi == "Colunas2") grafico <- Colunas2
-      if(input$tipo_Bi == "Colunas3") grafico <- Colunas3
-      if(input$tipo_Bi == "Barras") grafico <- Colunas + coord_flip()
-      if(input$tipo_Bi == "Barras2") grafico <- Colunas2 + coord_flip()
-      if(input$tipo_Bi == "Barras3") grafico <- Colunas3 + coord_flip()
+      if(input$tipo_Bi == "Colunas Superpostas Prop.") grafico <- Colunas
+      if(input$tipo_Bi == "Colunas Superpostas") grafico <- Colunas2
+      if(input$tipo_Bi == "Colunas Justapostas") grafico <- Colunas3
+      if(input$tipo_Bi == "Barras Superpostas Prop.") grafico <- Colunas + coord_flip()
+      if(input$tipo_Bi == "Barras Superpostas") grafico <- Colunas2 + coord_flip()
+      if(input$tipo_Bi == "Barras Justapostas") grafico <- Colunas3 + coord_flip()
       if(input$tipo_Bi == "Linhas qualitativas") grafico <- Linhas
     }
 #------- Variáveis qualitativa e quantitativa

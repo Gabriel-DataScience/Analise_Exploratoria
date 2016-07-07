@@ -5,8 +5,7 @@ box( title = "", status = "danger", width = 15,
        estatísticas descritivas básicas de um 
        determinado banco de dados."),
      p("Abaixo segue um tutorial para uso do aplicativo de forma correta,
-       o qual facilitará a compreensão dos resultados, tabelas e gráficos,
-       além das entradas de informações por você."),
+       o qual facilitará a compreensão dos resultados, tabelas e gráficos."),
      h3("1. Guia", span("Dados", style = "color:blue")),
      p("Aqui você poderá escolher se irá trabalhar com um banco de dados
        já disponível nos exemplos, ou com o seu próprio banco de dados."),
@@ -40,7 +39,7 @@ box( title = "", status = "danger", width = 15,
      br(),
      h4("1.4 Visualização das variáveis do banco de dados"),
      p("Através da seção de marcadores", strong("Colunas a mostrar:"),
-       "você poderá selecionar as variáveis que queira visulizar."),
+       "você poderá selecionar as variáveis que queira visualizar."),
      img(src = "imagem5.JPG"),
      br(),br(),
      h4("1.5 Visualização do banco de dados"),
@@ -63,7 +62,7 @@ box( title = "", status = "danger", width = 15,
      h4("2.2 Visualização das tabelas descritivas"),
      p("Através das abas", strong("Variáveis quantitativas"), "e", 
        strong("Variáveis qualitativas"), "você poderá visualizar as estatísticas 
-       descritivas das variáveis quantitativas e a tabela de frequências da 
+       descritivas das variáveis quantitativas e a tabela de frequências das
        variáveis qualitativas."),
      img(src = "imagem8.jpg",width = 800),
      h3("3. Guia ", span("Gráficos Univariados", style = "color:blue")),

@@ -48,20 +48,22 @@ TipoGrafico <-
 # Selecionar o tipo de gráfico bivariado
 TipoGrafico_Bi <-
   selectInput(inputId = "tipo_Bi", label = "Tipo de gráfico",
-              choices = c("Colunas","Colunas2","Colunas3", "Barras","Barras2","Barras3",
-                          "Histograma", "Linhas qualitativas", "Linhas densidades", "Pontos", "BoxPlot"))
+              choices = c("Colunas Superpostas Prop.","Colunas Superpostas","Colunas Justapostas",
+                          "Barras Superpostas Prop.","Barras Superpostas","Barras Justapostas",
+                          "Histograma", "Linhas qualitativas", 
+                          "Linhas densidades", "Pontos", "BoxPlot"))
 
 
 # inserir o título do gráfico
 InserirTitulo <-
-  textInput("text_titulo", label = "Título", value = "Digite o título do gráfico")
+  textInput("text_titulo", label = "Título", placeholder = "Digite o título do gráfico")
 
 InserirTitulo_Bi <-
-  textInput("text_titulo_Bi", label = "Título", value = "Digite o título do gráfico")
+  textInput("text_titulo_Bi", label = "Título", placeholder = "Digite o título do gráfico")
 
 # inserir o eixo x do gráfico
 InserirEixo <-
-  textInput("text_eixo", label = "Eixo x", value = "Digite o título do eixo x")
+  textInput("text_eixo", label = "Eixo x", placeholder = "Digite o título do eixo x")
 
 # inserir número de classes do histograma
 NumeroClasses <-
