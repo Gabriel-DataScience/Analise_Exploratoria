@@ -69,7 +69,7 @@ box( title = "", status = "danger", width = 15,
      p("Nessa guia você poderá criar e salvar seus gráficos univariados."),
      h4("3.1 Escolha do gráfico"),
      p("Na caixa de seleção", strong("Tipo de gráfico"), "você poderá escolher
-      o tipo de gráfico desejado: Colunas, Barras, Pizza e Histograma e na caixa 
+      o tipo de gráfico desejado: Colunas, Barras, Setores e Histograma e na caixa 
       de seleção" , strong("Selecione a variável!"), "aparecerá as variáveis 
       adequadas para cada gráfico."),
      img(src = "imagem9.jpg"),
@@ -79,7 +79,7 @@ box( title = "", status = "danger", width = 15,
      img(src = "imagem10.jpg"),
      h4("3.3 Visualização do gráfico univariado"),
      p("Depois de escolhido o tipo de gráfico e a variável, você poderá visualizar 
-       o gráfico univariado, como por exemplo o gráfico de pizza da variável",
+       o gráfico univariado, como por exemplo o gráfico de Setores da variável",
        em("carb"), "do banco de dados", em("mtcars"), "que é dado na imagem abaixo."),
      img(src = "imagem11.jpg"),
      h3("4. Guia ", span("Gráficos Bivariados", style = "color:blue")),

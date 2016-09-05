@@ -8,12 +8,11 @@ dados <- function(input){
     switch(input$ExemplodeDados,
            "cars" = cars,
            "faithful" = faithful,
-           "WorldPhones" = as.data.frame(WorldPhones),
            "iris" = iris,
            "mtcars" = mtcars)
   })
   
-  if(input$Escolha == "Exemplo") dados <- datasetInput()
+  if(req(input$Escolha) == "Exemplo") dados <- datasetInput()
 
   if(input$Escolha == "Seu própio banco de dados"){
     inFile <- req(input$arquivoescolhido)

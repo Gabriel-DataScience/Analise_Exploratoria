@@ -10,7 +10,7 @@ radioButtons(inputId = "Escolha", label = "Qual banco de dados quer usar?",
 enter_exemplo <-
 selectInput(inputId = "ExemplodeDados", label = "Exemplos de bancos de dados",
             choices = list("faithful" = "faithful", "cars" = "cars" ,
-                           "iris" = "iris", "WorldPhones" = "WorldPhones", "mtcars" = "mtcars"), 
+                           "iris" = "iris", "mtcars" = "mtcars"), 
             selected = "mtcars")
 
 # Entrar com o banco de dados
@@ -43,7 +43,7 @@ radioButtons(inputId = "dec", label = "Decimal",
 # Selecionar o tipo de gráfico
 TipoGrafico <-
   selectInput(inputId = "tipo", label = "Tipo de gráfico",
-              choices = c("Colunas", "Barras", "Pizza", "Histograma"))
+              choices = c("Colunas", "Barras", "Setores", "Histograma"))
 
 # Selecionar o tipo de gráfico bivariado
 TipoGrafico_Bi <-
@@ -75,6 +75,15 @@ NumeroClasses_Bi <-
               max = 50, value = 10)
 
 
+Download_quantitativa <-
+  downloadButton('downloadData', 'Download da tabela das variáveis quantitativas')
+
+Download_qualitativa <-
+  downloadButton('downloadData2', 'Download da tabela das variáveis qualitativas')
+
+format_arquivo_Tabela <- 
+  radioButtons('format_Tabela', 'Formato do documento', c('PDF', 'HTML', 'Word','.CSV'),
+               inline = TRUE, selected = '.CSV')
 
 
 
