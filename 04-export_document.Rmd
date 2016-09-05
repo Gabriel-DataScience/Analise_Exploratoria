@@ -1,0 +1,21 @@
+---
+title: "Software de análise exploratória de dados"
+author: "Gabriel Fernandes Gomes e Lissandra Parente de Araújo"
+header-includes:
+ - \usepackage{caption}
+ - \usepackage[utf8]{inputenc}
+output: pdf_document
+---
+
+
+```{r , echo = FALSE, message = FALSE, warning=FALSE}
+  # - \usepackage[brazil]{babel}
+if(aux == "quantitativa") dados <- round( mytable1(), 2) else dados <- mytable2()
+  
+  Resultado <- dados
+  kable(Resultado, caption = names(Resultado), row.names = TRUE )
+  
+
+
+```
+
